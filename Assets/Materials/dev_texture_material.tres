@@ -1,0 +1,8 @@
+[gd_resource type="SpatialMaterial" load_steps=2 format=2]
+
+[ext_resource path="res://Assets/Textures/dev_texture_orange_192px.jpg" type="Texture" id=1]
+
+[resource]
+albedo_texture = ExtResource( 1 )
+uv1_scale = Vector3( 30, 30, 30 )
+uv2_scale = Vector3( 10, 10, 10 )

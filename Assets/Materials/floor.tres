@@ -1,0 +1,13 @@
+[gd_resource type="SpatialMaterial" load_steps=3 format=2]
+
+[ext_resource path="res://Assets/Textures/floor_0.jpg" type="Texture" id=1]
+[ext_resource path="res://Assets/Textures/floor_0_norm.png" type="Texture" id=2]
+
+[resource]
+albedo_color = Color( 0.552941, 0.552941, 0.552941, 1 )
+albedo_texture = ExtResource( 1 )
+normal_enabled = true
+normal_scale = 0.0
+normal_texture = ExtResource( 2 )
+uv1_scale = Vector3( 15, 15, 1 )
+uv1_triplanar_sharpness = 0.466516

@@ -1,0 +1,11 @@
+[gd_resource type="SpatialMaterial" load_steps=2 format=2]
+
+[ext_resource path="res://Assets/Textures/wall_grass_0.png" type="Texture" id=1]
+
+[resource]
+flags_transparent = true
+params_specular_mode = 4
+params_cull_mode = 2
+params_depth_draw_mode = 3
+albedo_color = Color( 0.470588, 0.847059, 0.635294, 1 )
+albedo_texture = ExtResource( 1 )
