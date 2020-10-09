@@ -88,3 +88,4 @@ func _process(delta):
 #		$MODEL/gdquest_mannequin/root/Skeleton.set_bone_global_pose_override(i, t, 1.0, true)
 #	else:
 #		$MODEL/gdquest_mannequin/root/Skeleton.clear_bones_global_pose_override()
+

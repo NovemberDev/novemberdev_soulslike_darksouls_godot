@@ -25,16 +25,16 @@ void light() {
     DIFFUSE_LIGHT += clamp(dot(NORMAL, LIGHT * 5000.0), 0.0, 7.0) * ATTENUATION * ALBEDO;
 }"
 
-[sub_resource type="OpenSimplexNoise" id=10]
+[sub_resource type="OpenSimplexNoise" id=2]
 seed = 6
 octaves = 6
 period = 256.0
 persistence = 0.728
 lacunarity = 1.17
 
-[sub_resource type="NoiseTexture" id=11]
+[sub_resource type="NoiseTexture" id=3]
 seamless = true
-noise = SubResource( 10 )
+noise = SubResource( 2 )
 
 [resource]
 shader = SubResource( 1 )
@@ -42,4 +42,4 @@ shader_param/albedo = Color( 0.552941, 0.552941, 0.552941, 1 )
 shader_param/uv1_scale = Vector3( 5, 5, 1 )
 shader_param/uv1_offset = Vector3( 0, 0, 0 )
 shader_param/texture_albedo = ExtResource( 1 )
-shader_param/noise_tex = SubResource( 11 )
+shader_param/noise_tex = SubResource( 3 )
