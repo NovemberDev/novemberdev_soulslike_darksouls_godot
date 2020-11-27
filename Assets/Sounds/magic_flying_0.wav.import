@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/magic_flying_0.wav-4d6e1fd06f32e917e1c1b2eafb9c024d.sample"
+
+[deps]
+
+source_file="res://Assets/Sounds/magic_flying_0.wav"
+dest_files=[ "res://.import/magic_flying_0.wav-4d6e1fd06f32e917e1c1b2eafb9c024d.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop=false
+compress/mode=0

@@ -1,0 +1,63 @@
+[gd_scene load_steps=10 format=2]
+
+[ext_resource path="res://Scripts/Projectile.gd" type="Script" id=1]
+[ext_resource path="res://Assets/Textures/particle.png" type="Texture" id=2]
+[ext_resource path="res://Scenes/FX.tscn" type="PackedScene" id=3]
+
+[sub_resource type="SphereShape" id=1]
+
+[sub_resource type="SphereMesh" id=2]
+radius = 0.1
+height = 0.2
+
+[sub_resource type="SpatialMaterial" id=3]
+albedo_color = Color( 1, 0.211765, 0, 1 )
+emission_enabled = true
+emission = Color( 1, 0.494118, 0, 1 )
+emission_energy = 1.0
+emission_operator = 0
+emission_on_uv2 = false
+
+[sub_resource type="ParticlesMaterial" id=4]
+emission_shape = 1
+emission_sphere_radius = 0.01
+gravity = Vector3( 0, 0, 0 )
+radial_accel = 4.38
+
+[sub_resource type="SpatialMaterial" id=5]
+flags_transparent = true
+flags_unshaded = true
+flags_do_not_receive_shadows = true
+flags_disable_ambient_light = true
+params_billboard_mode = 1
+albedo_texture = ExtResource( 2 )
+
+[sub_resource type="QuadMesh" id=6]
+material = SubResource( 5 )
+size = Vector2( 0.6, 0.6 )
+
+[node name="MAGIC" type="Area"]
+script = ExtResource( 1 )
+
+[node name="Spatial" type="Spatial" parent="."]
+
+[node name="CollisionShape" type="CollisionShape" parent="."]
+shape = SubResource( 1 )
+
+[node name="MeshInstance" type="MeshInstance" parent="."]
+mesh = SubResource( 2 )
+material/0 = SubResource( 3 )
+
+[node name="Particles" type="Particles" parent="."]
+amount = 16
+visibility_aabb = AABB( -5.12571, -4, -4, 10.2514, 8, 8 )
+process_material = SubResource( 4 )
+draw_pass_1 = SubResource( 6 )
+
+[node name="FX" parent="." instance=ExtResource( 3 )]
+
+[node name="OmniLight" type="OmniLight" parent="."]
+light_color = Color( 1, 0.647059, 0.564706, 1 )
+light_energy = 5.0
+shadow_enabled = true
+shadow_color = Color( 0.384314, 0.180392, 0.180392, 1 )

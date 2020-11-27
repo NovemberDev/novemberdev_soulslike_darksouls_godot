@@ -1,0 +1,175 @@
+[gd_scene load_steps=13 format=2]
+
+[ext_resource path="res://Assets/Materials/dev_texture_material.tres" type="Material" id=1]
+[ext_resource path="res://Assets/Textures/reduzio.png" type="Texture" id=2]
+
+[sub_resource type="CubeMesh" id=7]
+
+[sub_resource type="BoxShape" id=8]
+
+[sub_resource type="CubeMesh" id=9]
+
+[sub_resource type="BoxShape" id=10]
+
+[sub_resource type="GDScript" id=11]
+script/source = "extends RigidBody
+
+const GRAVITY = 12.5
+const VIEW_SPEED = 7
+const MAX_SPEED = 3.75
+const JOY_SENSITIVITY = 7.5
+const MOUSE_SENSITIVITY = 0.3
+
+var yaw = 0.0
+var pitch = 0.0
+var direction_input
+var direction = Vector3.ZERO
+var view_direction = Vector3.ZERO
+
+func _ready():
+	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	view_direction = $VIEW_ANCHOR.global_transform.basis.z
+
+func _input(event):
+	if event is InputEventMouseMotion:
+		yaw = fmod(yaw - event.relative.x * MOUSE_SENSITIVITY, 360)
+		pitch = max(min(pitch - event.relative.y * MOUSE_SENSITIVITY, 70), -50)
+		$VIEW_ANCHOR.rotation_degrees = Vector3(pitch, yaw, 0)
+
+func _process(delta):
+	direction = Vector3.ZERO
+	direction_input = Vector2.ZERO
+	
+	if Input.get_action_strength(\"gp_movement_d\") != 0:
+		direction_input.y = 1
+	if Input.get_action_strength(\"gp_movement_u\") != 0:
+		direction_input.y = -1
+	if Input.get_action_strength(\"gp_movement_r\") != 0:
+		direction_input.x = 1
+	if Input.get_action_strength(\"gp_movement_l\") != 0:
+		direction_input.x = -1
+	
+	direction_input.y -= Input.get_action_strength(\"gp_movement_d\") - Input.get_action_strength(\"gp_movement_u\")
+	direction_input.x -= Input.get_action_strength(\"gp_movement_l\") - Input.get_action_strength(\"gp_movement_r\")
+	direction -= $VIEW_ANCHOR.global_transform.basis.z * direction_input.y - $VIEW_ANCHOR.global_transform.basis.x * direction_input.x
+	direction.y = 0.0
+	
+	yaw = fmod(yaw + (Input.get_action_strength(\"gp_look_l\") - Input.get_action_strength(\"gp_look_r\")) * JOY_SENSITIVITY, 360)
+	pitch = max(min(pitch + (Input.get_action_strength(\"gp_look_u\") - Input.get_action_strength(\"gp_look_d\")) * JOY_SENSITIVITY, 70), -50)
+	
+	$VIEW_ANCHOR.rotation_degrees = Vector3(pitch, yaw, 0)
+	
+	if direction != Vector3.ZERO:
+		view_direction = lerp(view_direction, direction, delta * VIEW_SPEED)
+		linear_velocity = lerp(linear_velocity, view_direction.normalized() * MAX_SPEED, delta * VIEW_SPEED)
+		$MODEL.global_transform.basis = $MODEL.global_transform.basis.slerp($MODEL.global_transform.looking_at(global_transform.origin - view_direction * 2.0, Vector3.UP).basis, delta * VIEW_SPEED)
+	else:
+		linear_velocity = lerp(linear_velocity, Vector3.ZERO, delta * 5.0)
+		
+	linear_velocity.y -= GRAVITY * delta
+	linear_velocity.y = clamp(linear_velocity.y, -GRAVITY, GRAVITY)
+	
+	# Local look at to the View anchor node the ClippedCamera is attached to
+	$VIEW_ANCHOR/ClippedCamera.transform = $VIEW_ANCHOR/ClippedCamera.transform.looking_at(Vector3.ZERO, Vector3.UP)
+"
+
+[sub_resource type="CapsuleShape" id=1]
+radius = 0.6031
+
+[sub_resource type="CapsuleMesh" id=5]
+radius = 0.35
+mid_height = 0.8
+
+[sub_resource type="SpatialMaterial" id=12]
+albedo_texture = ExtResource( 2 )
+uv1_scale = Vector3( 4, 6, 1 )
+
+[sub_resource type="CubeMesh" id=2]
+
+[sub_resource type="SpatialMaterial" id=6]
+albedo_color = Color( 0.407843, 1, 0.639216, 1 )
+
+[node name="demo_level_0" type="Spatial"]
+
+[node name="Level" type="Spatial" parent="."]
+
+[node name="Floor" type="StaticBody" parent="Level"]
+transform = Transform( 30, 0, 0, 0, 0.083, 0, 0, 0, 20, 0, 0, 0 )
+
+[node name="MeshInstance" type="MeshInstance" parent="Level/Floor"]
+mesh = SubResource( 7 )
+material/0 = ExtResource( 1 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Level/Floor"]
+shape = SubResource( 8 )
+
+[node name="Wall_0" type="StaticBody" parent="Level"]
+transform = Transform( 8.50299, 0, 0, 0, 4.99707, 0, 0, 0, 0.564444, -11.1634, 0, -3.42208 )
+
+[node name="MeshInstance" type="MeshInstance" parent="Level/Wall_0"]
+mesh = SubResource( 9 )
+material/0 = ExtResource( 1 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Level/Wall_0"]
+shape = SubResource( 10 )
+
+[node name="Wall_1" type="StaticBody" parent="Level"]
+transform = Transform( 8.50299, 0, 0, 0, 4.99707, 0, 0, 0, 0.564444, -11.1634, 0, 4.66583 )
+
+[node name="MeshInstance" type="MeshInstance" parent="Level/Wall_1"]
+mesh = SubResource( 9 )
+material/0 = ExtResource( 1 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Level/Wall_1"]
+shape = SubResource( 10 )
+
+[node name="DirectionalLight" type="DirectionalLight" parent="Level"]
+transform = Transform( 0.255528, 0.782087, -0.568371, -0.459763, 0.615458, 0.640179, 0.850484, 0.097732, 0.516842, 0, 23.7924, 0 )
+shadow_enabled = true
+
+[node name="PLAYER" type="Spatial" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -27.0476, 1.73656, 0 )
+
+[node name="Rigidbody" type="RigidBody" parent="PLAYER" groups=[
+"player",
+]]
+collision_layer = 2
+mode = 2
+mass = 0.00102041
+gravity_scale = 0.0
+contacts_reported = 4
+contact_monitor = true
+axis_lock_angular_x = true
+axis_lock_angular_y = true
+axis_lock_angular_z = true
+script = SubResource( 11 )
+
+[node name="CollisionShape" type="CollisionShape" parent="PLAYER/Rigidbody"]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0 )
+shape = SubResource( 1 )
+
+[node name="VIEW_ANCHOR" type="Spatial" parent="PLAYER/Rigidbody"]
+transform = Transform( 0.97696, -0.00897815, -0.213234, 0, 0.999115, -0.0420675, 0.213423, 0.0410982, 0.976095, 0, 0.271604, 0 )
+
+[node name="ClippedCamera" type="ClippedCamera" parent="PLAYER/Rigidbody/VIEW_ANCHOR"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2.5 )
+current = true
+fov = 60.0
+near = 0.01
+far = 8192.0
+
+[node name="MODEL" type="Spatial" parent="PLAYER/Rigidbody"]
+
+[node name="Capsule" type="MeshInstance" parent="PLAYER/Rigidbody/MODEL"]
+transform = Transform( -0.910583, -0.409859, -0.0534285, -0.0585744, 1.62641e-07, 0.998283, -0.409156, 0.912149, -0.0240074, 0, -0.354187, 0 )
+mesh = SubResource( 5 )
+material/0 = SubResource( 12 )
+
+[node name="Arrow" type="MeshInstance" parent="PLAYER/Rigidbody/MODEL"]
+transform = Transform( 0.0373927, 0, 0, 0, 0.0299382, 0, 0, 0, 0.434749, 0, 0.324094, 0.532012 )
+mesh = SubResource( 2 )
+material/0 = SubResource( 6 )
+
+[node name="FloorSensor" type="RayCast" parent="PLAYER/Rigidbody"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.145, 0 )
+enabled = true
